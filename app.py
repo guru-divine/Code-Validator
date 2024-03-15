@@ -9,16 +9,79 @@
 # 8 -> Your #navbar element should contain at least one a element whose href attribute starts with #
 # 9 -> one link with id "profile-link" which links to my github profile
 # 10 -> Your #profile-link element should have a target attribute of _blank.
-# 11 -> Your portfolio should use at least one media query.                                             (remaining)
-# 12 -> navbar should always be at the top of the viewport (i.e. top=0, z-index=max)                    (remaining)
+# 11 -> Your portfolio should use at least one media query.                                             
+# 12 -> navbar should always be at the top of the viewport (i.e. top=0, z-index=max)                    
 
 
 import requests
+import cssutils
 from bs4 import BeautifulSoup
 
 with open("index.html", "r", encoding='utf-8') as file:
     html_doc = file.read()
 soup = BeautifulSoup(html_doc, 'html.parser')
+
+# CSS file to check
+css_file = 'style.css'
+
+def is_navbar_fixed(css_file, selector, properties):
+    # Parse the CSS file
+    parser = cssutils.CSSParser()
+    css = parser.parseFile(css_file)
+
+    # Iterate over each CSS rule
+    for rule in css.cssRules:
+        # Check if the rule matches the specified selector
+        if isinstance(rule, cssutils.css.CSSStyleRule) and selector in rule.selectorText:
+            # Check if the rule contains the specified properties
+            for property in rule.style:
+                if property.name == 'top' and property.value == '0' and \
+                        rule.style.getPropertyValue('position') == 'fixed':
+                    return True
+
+    return False
+
+def contains_media_query(css_file):
+    # Parse the CSS file
+    parser = cssutils.CSSParser()
+    css = parser.parseFile(css_file)
+
+    # Check if any @media rules are present
+    for rule in css.cssRules:
+        if isinstance(rule, cssutils.css.CSSMediaRule):
+            return True  # Media query found
+    return False  # No media queries found
+
+# Selector and properties to check for
+
+navbar_element = soup.find(id="navbar")
+
+# Check if the navbar element exists and has any classes
+if navbar_element and navbar_element.has_attr("class"):
+    classes = navbar_element["class"]
+    class_name = '.' + classes[0]
+    print(class_name)
+
+
+selector = '#navbar'
+properties = 'top: 0;'
+
+# 12 -> navbar should always be at the top of the viewport (i.e. top=0, z-index=max)   
+# Check if the navbar has top: 0 and position: fixed in the CSS file
+if is_navbar_fixed(css_file, selector, properties):
+    print("The navbar has 'top: 0' and 'position: fixed' in the CSS file.")
+elif class_name != None and is_navbar_fixed(css_file, class_name, properties):
+    print("The navbar has 'top: 0' and 'position: fixed' in the CSS file.")
+else:
+    print("The navbar does not have 'top: 0' and 'position: fixed' in the CSS file.")
+
+# 11 -> Your portfolio should use at least one media query. 
+# Check if the CSS file contains any media queries
+if contains_media_query(css_file):
+    print("The CSS file contains at least one media query.")
+else:
+    print("No media queries found in the CSS file.")
+
 
 idNames = [("welcome-section", 1), ("projects", 4), ("navbar", 7)]  # Example list of ID names with corresponding indices
 # tagNames = [("h1", )]
@@ -26,6 +89,20 @@ idNames = [("welcome-section", 1), ("projects", 4), ("navbar", 7)]  # Example li
 illegal_tags = {"hr", "br", "img", "input", "button", "select", "table"}
 
 isPresent = {}
+
+# 0 -> To check whether css file is linked or not
+#To check wheteher css file is linked or not
+css_file = "styles.css"
+head_tag = soup.head
+flag = False
+link_tags = head_tag.find_all('link')
+for link_tag in link_tags:
+    if link_tag.get('rel') == ['stylesheet'] and link_tag.get('href') == css_file:
+        print("Styles.css is present")
+        flag = True
+        break
+if flag == False:
+    print("Styles.css is not present")
 
 
 # 2, 3 -> The welcome section should have an h1 element that contains text
@@ -81,15 +158,5 @@ for a_tag in a_tags:
             if(target_attribute == "_blank"):
                 print("task 10 completed")
 
-
-
-# 12(do it again)
-    
-# first_container = soup.body.find_next()
-# while first_container.contents == None:
-#     first_container = soup.body.find_next()
-# if first_container and 'id' in first_container.attrs and first_container['id']=='navbar':
-#     print("Navbar element is at the top")
-
-print(isPresent)
+# print(isPresent)
 
