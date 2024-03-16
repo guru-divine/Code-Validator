@@ -1,5 +1,5 @@
 # Web Development Assignment Validator
-This repository contains a validator tool designed for evaluating code submissions for a learning platform's Web Development assignment. The validator provides clear feedback to users, indicating any areas where their code does not meet the specified criteria.
+This repository contains a validator tool designed for evaluating code submissions for a learning platform's Web Development assignment taking inspiration from [freeCodeCamp's "Build a Personal Portfolio Webpage" project](https://www.freecodecamp.org/learn/2022/responsive-web-design/build-a-personal-portfolio-webpage-project/build-a-personal-portfolio-webpage). The validator provides clear feedback to users, indicating any areas where their code does not meet the specified criteria.
 
 ## Features
 Validates code submissions based on a set of predefined criteria.
@@ -56,6 +56,6 @@ Once the dependencies are installed, you can execute the validation script. Navi
   cd Code-Validator
   python app.py
 ```
-This will execute the validation script, which will analyze your HTML and CSS files against the predefined criteria and provide feedback on areas that need improvement.
+This will execute the validation script, which will analyze your HTML and CSS files against the predefined criteria and provide feedback on areas that need improvement. You can change the HTML and CSS files accordingly to see the results.
 
 By following these steps, you can quickly set up the environment and evaluate your code submissions using the validation script.
