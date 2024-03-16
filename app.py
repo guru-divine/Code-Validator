@@ -24,7 +24,7 @@ def read_html_file(file_path):
 def is_navbar_fixed(css_file, selector, properties):
     """Check if navbar has fixed positioning with specified properties."""
     parser = cssutils.CSSParser()
-    css = parser.parseFile(css_file)
+    css = parser.parseFile(css_file, validate=False)
     for rule in css.cssRules:
         if isinstance(rule, cssutils.css.CSSStyleRule) and selector in rule.selectorText:
             for property in rule.style:
@@ -36,7 +36,7 @@ def is_navbar_fixed(css_file, selector, properties):
 def contains_media_query(css_file):
     """Check if CSS file contains any media queries."""
     parser = cssutils.CSSParser()
-    css = parser.parseFile(css_file)
+    css = parser.parseFile(css_file, validate=False)
     for rule in css.cssRules:
         if isinstance(rule, cssutils.css.CSSMediaRule):
             return True
@@ -45,7 +45,7 @@ def contains_media_query(css_file):
 def check_element_height(css_file, selector, property):
     # Parse the CSS file
     parser = cssutils.CSSParser()
-    css = parser.parseFile(css_file)
+    css = parser.parseFile(css_file, validate=False)
 
     # Iterate over each CSS rule
     for rule in css.cssRules:
@@ -133,12 +133,16 @@ tag_name = "h1"
 welcome_section = find_element_by_id(html_soup, id_name)
 if check_element_has_child_with_tag(welcome_section, tag_name):
     print(f"#{id_name} contains at least one element with tag '{tag_name}'.")
+else:
+    print(f"#{id_name} contains no element with tag '{tag_name}'.")
 
 # Check if #id_name has an <tag_name> element that contains text            (3)
 tag_name = "h1"
 id_name = "welcome-section"
 if check_no_empty_tag_in_id_name(tag_name, id_name, html_soup):
     print(f"Element {tag_name} found with text in {id_name}'s container")
+else:
+    print(f"No {tag_name} Element found with text in {id_name}'s container")
 
 
 # Check if project section contains one element with class class_name       (5)
@@ -146,13 +150,17 @@ id_name = "projects"
 projects_section = find_element_by_id(html_soup, id_name)
 class_name = "project-tile"
 if check_element_has_child_with_class(projects_section, class_name):
-    print(f"Portfolio contains at least one element with class '{class_name}'.")
+    print(f"Portfolio contains at least one element with class '{class_name} under id {id_name}'.")
+else:
+    print(f"Portfolio contains no element with class '{class_name} under id {id_name}'.")
 
 
 # Check if project section contains one element with tag tag_name           (6)
 tag_name = "a"
 if check_element_has_child_with_tag(projects_section, tag_name):
-    print(f"Portfolio contains at least one element with tag '{tag_name}'.")
+    print(f"Portfolio contains at least one element with tag '{tag_name}' under id {id_name}.")
+else:
+    print(f"Portfolio contains no element with tag '{tag_name}' under id {id_name}.")
 
 
 # Check if navbar contains at least one link with href starting with #      (8)
