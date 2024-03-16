@@ -36,7 +36,7 @@ Here's a refined breakdown of my approach:
 7. **Scalability**: A cornerstone of my implementation lies in its inherent scalability. By encapsulating validation logic within modular functions and embracing parameterization, I've architected a solution poised for expansion. With minimal effort, new criteria can seamlessly integrate into the existing framework, ensuring the validator remains adaptable to evolving requirements.
 
 ## Getting Started
-To get started with exploring the code, simply navigate to the respective week's folder of interest. You can review the code files directly on GitHub or clone the repository to your local machine for a more in-depth analysis.
+To get started with exploring the code, simply navigate to the respective file of interest. You can review the code files directly on GitHub or clone the repository to your local machine for a more in-depth analysis.
 ### Clone the Repository:
 
 Clone this repository to your local machine using the following command:
