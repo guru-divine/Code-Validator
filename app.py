@@ -1,162 +1,182 @@
-
-# 1 -> find id with name "welcome-section"                                                              (completed)
-# 2 -> Your #welcome-section element should contain an h1 element.                                      (completed)
-# 3 -> You should not have any empty h1 elements within #welcome-section element                        (completed)
-# 4 -> find id "projects"
-# 5 -> Your portfolio should contain at least one element with a class of project-tile.
-# 6 -> contain atleast one link (i.e. atleast one <a>)
-# 7 -> navbar with id "navbar"
-# 8 -> Your #navbar element should contain at least one a element whose href attribute starts with #
-# 9 -> one link with id "profile-link" which links to my github profile
-# 10 -> Your #profile-link element should have a target attribute of _blank.
-# 11 -> Your portfolio should use at least one media query.                                             
-# 12 -> navbar should always be at the top of the viewport (i.e. top=0, z-index=max)                    
-
-
-import requests
 import cssutils
 from bs4 import BeautifulSoup
 
-with open("index.html", "r", encoding='utf-8') as file:
-    html_doc = file.read()
-soup = BeautifulSoup(html_doc, 'html.parser')
-
-# CSS file to check
-css_file = 'style.css'
+def read_html_file(file_path):
+    """Read HTML file and return BeautifulSoup object."""
+    with open(file_path, "r", encoding="utf-8") as file:
+        html_doc = file.read()
+    return BeautifulSoup(html_doc, "html.parser")
 
 def is_navbar_fixed(css_file, selector, properties):
+    """Check if navbar has fixed positioning with specified properties."""
+    parser = cssutils.CSSParser()
+    css = parser.parseFile(css_file)
+    for rule in css.cssRules:
+        if isinstance(rule, cssutils.css.CSSStyleRule) and selector in rule.selectorText:
+            for property in rule.style:
+                if property.name == "top" and property.value == "0" and \
+                        rule.style.getPropertyValue("position") == "fixed":
+                    return True
+    return False
+
+def contains_media_query(css_file):
+    """Check if CSS file contains any media queries."""
+    parser = cssutils.CSSParser()
+    css = parser.parseFile(css_file)
+    for rule in css.cssRules:
+        if isinstance(rule, cssutils.css.CSSMediaRule):
+            return True
+    return False
+
+def check_element_height(css_file, selector, property):
     # Parse the CSS file
     parser = cssutils.CSSParser()
     css = parser.parseFile(css_file)
 
     # Iterate over each CSS rule
     for rule in css.cssRules:
-        # Check if the rule matches the specified selector
-        if isinstance(rule, cssutils.css.CSSStyleRule) and selector in rule.selectorText:
-            # Check if the rule contains the specified properties
-            for property in rule.style:
-                if property.name == 'top' and property.value == '0' and \
-                        rule.style.getPropertyValue('position') == 'fixed':
-                    return True
+        # Check if the rule matches the specified selector and sets height to 100vh
+        if isinstance(rule, cssutils.css.CSSStyleRule) and \
+           rule.selectorText == selector and \
+           property in rule.style and rule.style[property] == '100vh':
+            return True  # Rule found
+    return False  # Rule not found
 
+def find_element_by_id(soup, id_name):
+    """Find element in HTML by ID."""
+    return soup.find(id=id_name)
+
+def check_no_empty_tag_in_id_name(tag_name, id_name, soup):
+    """
+    Check if there are any empty <tag_name> elements within the #id_name.
+    Args:
+        soup (BeautifulSoup): Parsed HTML document.
+
+    Returns:
+        bool: True if #id_name have an <tag_name> element that contains text, False otherwise
+    """
+    # Find the #id_name element
+    idname_section = soup.find(id=id_name)
+    
+    if idname_section:
+        # Find all <tag_name> elements within #id_name
+        x_tags = idname_section.find_all(tag_name)
+        
+        for x_tag in x_tags:
+            # Check if the <tag_name> element has non-empty text content
+            if not x_tag.text.strip():
+                return False  # Empty <tag_name> element found
+        return True  # No empty <tag_name> elements found within #welcome-section
+    else:
+        return False  # id_name not found
+    
+def check_link_with_href_starting_with(hash_links):
+    """Check if there's at least one link with href starting with '#'."""
+    for link in hash_links:
+        if link.get("href", "").startswith("#"):
+            return True
     return False
 
-def contains_media_query(css_file):
-    # Parse the CSS file
-    parser = cssutils.CSSParser()
-    css = parser.parseFile(css_file)
+def check_profile_link(profile_link, website_link, target_attr):
+    """Check if profile link exists and has target attribute set to _blank."""
+    if profile_link:
+        href_attribute = profile_link.get("href")
+        if href_attribute == website_link:
+            target_attribute = profile_link.get("target")
+            return target_attribute == target_attr
+    return False
+    
+def check_element_has_child_with_tag(parent_element, tag_name):
+    """Check if parent element has a child with specified tag name."""
+    return parent_element and parent_element.find(tag_name)
 
-    # Check if any @media rules are present
-    for rule in css.cssRules:
-        if isinstance(rule, cssutils.css.CSSMediaRule):
-            return True  # Media query found
-    return False  # No media queries found
-
-# Selector and properties to check for
-
-navbar_element = soup.find(id="navbar")
-
-# Check if the navbar element exists and has any classes
-if navbar_element and navbar_element.has_attr("class"):
-    classes = navbar_element["class"]
-    class_name = '.' + classes[0]
-    print(class_name)
+def check_element_has_child_with_class(parent_element, class_name):
+    """Check if parent element has a child with specified class."""
+    return parent_element and parent_element.find(class_=class_name)
+    
 
 
-selector = '#navbar'
-properties = 'top: 0;'
 
-# 12 -> navbar should always be at the top of the viewport (i.e. top=0, z-index=max)   
-# Check if the navbar has top: 0 and position: fixed in the CSS file
-if is_navbar_fixed(css_file, selector, properties):
-    print("The navbar has 'top: 0' and 'position: fixed' in the CSS file.")
-elif class_name != None and is_navbar_fixed(css_file, class_name, properties):
-    print("The navbar has 'top: 0' and 'position: fixed' in the CSS file.")
-else:
-    print("The navbar does not have 'top: 0' and 'position: fixed' in the CSS file.")
-
-# 11 -> Your portfolio should use at least one media query. 
-# Check if the CSS file contains any media queries
-if contains_media_query(css_file):
-    print("The CSS file contains at least one media query.")
-else:
-    print("No media queries found in the CSS file.")
-
-
-idNames = [("welcome-section", 1), ("projects", 4), ("navbar", 7)]  # Example list of ID names with corresponding indices
-# tagNames = [("h1", )]
-
-illegal_tags = {"hr", "br", "img", "input", "button", "select", "table"}
-
-isPresent = {}
-
-# 0 -> To check whether css file is linked or not
-#To check wheteher css file is linked or not
+# Read HTML file
+html_soup = read_html_file("index.html")
+# CSS file to check
 css_file = "styles.css"
-head_tag = soup.head
-flag = False
-link_tags = head_tag.find_all('link')
-for link_tag in link_tags:
-    if link_tag.get('rel') == ['stylesheet'] and link_tag.get('href') == css_file:
-        print("Styles.css is present")
-        flag = True
-        break
-if flag == False:
-    print("Styles.css is not present")
 
 
-# 2, 3 -> The welcome section should have an h1 element that contains text
-welcome_section = soup.find(id="welcome-section")
-h1_tags = welcome_section.find_all('h1')
-h1_tag_find = welcome_section.find('h1')
-if h1_tag_find:
-    print("Task 2 completed")
-for h1_tag in h1_tags:
-    if h1_tag.text.strip():
-        print("Task 3 completed")
-        break
+# List of ID names to find in the HTML
+id_names = ["welcome-section", "projects", "navbar"]
 
-
-# 5, 6 -> Your portfolio should contain at least one element with a class of project-tile.
-project_id = soup.find(id="projects")
-if project_id:
-    if project_id.find('a'):
-        print("Task 5 completed")
-    project_children = project_id.find(class_="project-tile")
-    if(project_children):
-        print("Task 6 completed")
-
-# 1, 4, 7
-for idName, index in idNames:
-    if soup.find(id=idName) is not None:
-        print(f"Task {index} completed")
-        isPresent[index] = True
+# Check if specified ID elements exist in the HTML                          (1, 3, 6)
+for id_name in id_names:
+    if find_element_by_id(html_soup, id_name):
+        print(f"Element with ID '{id_name}' found.")
     else:
-        isPresent[index] = False
+        print(f"Element with ID '{id_name}' not found.")
 
-# 8 -> Your #navbar element should contain at least one a element whose href attribute starts with #
-navbar_id = soup.find(id="navbar")
-a_tags = navbar_id.find_all('a')
 
-for a_tag in a_tags:
-    href_attribute = a_tag.get('href')
-    if href_attribute and href_attribute.startswith('#'):
-        matching_link_found = True
-        print("Task 8 completed")
-        break  # Exit the loop if a matching link is found
 
-# 9, 10
+# Check if #id_name has an <tag_name> element that contains text            (2)
+tag_name = "h1"
+id_name = "welcome-section"
+if check_no_empty_tag_in_id_name(tag_name, id_name, html_soup):
+    print(f"Element {tag_name} found with text in {id_name}'s container")
 
-a_tags = soup.find_all('a')
-for a_tag in a_tags:
-    if a_tag.get('id') and a_tag.get('id') == 'profile-link':
-        my_github = "https://github.com/guru-divine"
-        href_attribute = a_tag.get('href')
-        if href_attribute == my_github:
-            print("Task 9 completed")
-            target_attribute = a_tag.get('target')
-            if(target_attribute == "_blank"):
-                print("task 10 completed")
 
-# print(isPresent)
+# Check if project section contains one element with class class_name       (4)
+projects_section = find_element_by_id(html_soup, "projects")
+class_name = "project-tile"
+if check_element_has_child_with_class(projects_section, class_name):
+    print(f"Portfolio contains at least one element with class '{class_name}'.")
 
+
+# Check if project section contains one element with tag tag_name           (5)
+    tag_name = "a"
+if check_element_has_child_with_tag(projects_section, tag_name):
+    print(f"Portfolio contains at least one element with tag '{tag_name}'.")
+
+
+# Check if navbar contains at least one link with href starting with #      (7)
+id_name = "navbar"
+navbar_element = find_element_by_id(html_soup, id_name)
+if navbar_element:
+    hash_links = navbar_element.find_all("a")
+    if check_link_with_href_starting_with(hash_links):
+        print("Navbar contains at least one link with href starting with #.")
+    else:
+        print("Navbar does not contain any links with href starting with #.")
+
+
+# Check if profile link exists and has target attribute set to _blank       (8)
+id_name = "profile-link"
+website_link = "https://github.com/guru-divine"
+profile_link = find_element_by_id(html_soup, id_name)
+target_attr = "_blank"
+
+if check_profile_link(profile_link, website_link, target_attr):
+    print(f"Profile link exists and links to GitHub profile ({website_link}) with target attribute set to {target_attr}.")
+else:
+    print("Profile link does not meet the specified criteria.")
+
+
+# Check if CSS file contains media queries                                  (9)
+if contains_media_query(css_file):
+    print(f"The CSS file ({css_file}) contains media queries.")
+else:
+    print(f"No media queries found in the CSS file ({css_file}).")
+
+
+# Check if the height of the welcome-section is equal to the height of the viewport  (10)
+selector = "#welcome-section"
+property = "height"
+if check_element_height(css_file, selector, property):
+    print(f"The CSS file contains a rule to set the height of {selector} to 100vh.")
+else:
+    print("No such rule found in the CSS file.")
+
+
+# Check if navbar has is always at top of viewport                          (11)
+selector = "#navbar"
+if is_navbar_fixed(css_file, selector, "top: 0; position: fixed;"):
+    print("The navbar has fixed positioning in the CSS file.")
+else:
+    print("The navbar does not have fixed positioning in the CSS file.")
