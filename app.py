@@ -1,15 +1,15 @@
-# 1 -> Your portfolio should have a "Welcome" section with an id of welcome-section.
-# 2 -> Your #welcome-section element should contain an h1 element.
+# 1 -> Your portfolio should have a "Welcome" section with an id of welcome-section.  /
+# 2 -> Your #welcome-section element should contain an h1 element.                    /
 # 3 -> You should not have any empty h1 elements within #welcome-section element.
-# 4 -> You should have a "Projects" section with an id of projects.
-# 5 -> Your portfolio should contain at least one element with a class of project-tile.
-# 6 -> Your #projects element should contain at least one a element.
-# 7 -> Your portfolio should have a navbar with an id of navbar.
+# 4 -> You should have a "Projects" section with an id of projects.                   /
+# 5 -> Your portfolio should contain at least one element with a class of project-tile.         /
+# 6 -> Your #projects element should contain at least one a element.                 /
+# 7 -> Your portfolio should have a navbar with an id of navbar.                     /
 # 8 -> Your #navbar element should contain at least one a element whose href attribute starts with #.
-# 9 -> Your portfolio should have an a element with an id of profile-link.
-# 10-> Your #profile-link element should have a target attribute of _blank.
-# 11-> Your portfolio should use at least one media query.
-# 12-> Your #navbar element should always be at the top of the viewport.
+# 9 -> Your portfolio should have an a element with an id of profile-link.             /
+# 10-> Your #profile-link element should have a target attribute of _blank.            /
+# 11-> Your portfolio should use at least one media query.                             /
+# 12-> Your #navbar element should always be at the top of the viewport.               /
 
 
 import cssutils
@@ -33,13 +33,21 @@ def is_navbar_fixed(css_file, selector, properties):
                     return True
     return False
 
-def contains_media_query(css_file):
+def contains_media_query(css_file, param, size):
     """Check if CSS file contains any media queries."""
     parser = cssutils.CSSParser()
     css = parser.parseFile(css_file, validate=False)
     for rule in css.cssRules:
-        if isinstance(rule, cssutils.css.CSSMediaRule):
-            return True
+        if isinstance(rule, cssutils.css.CSSMediaRule) and selector in rule.selectorText:
+            for property in rule.style:
+                # if 
+                if property.name == param and property.value >= "500px":
+                    if property.name == "top" and property.value == "0":
+                        return True
+                if property.name == "width" and property.value <= "500px":
+                    if property.name == "top" and property.value == "50":
+                        return True
+            # return True
     return False
 
 def check_element_height(css_file, selector, property):
@@ -59,6 +67,7 @@ def check_element_height(css_file, selector, property):
 def find_element_by_id(soup, id_name):
     """Find element in HTML by ID."""
     return soup.find(id=id_name)
+    # return soup.find(class_=class_name)
 
 def check_no_empty_tag_in_id_name(tag_name, id_name, soup):
     """
@@ -208,3 +217,28 @@ if is_navbar_fixed(css_file, selector, "top: 0; position: fixed;"):
     print("The navbar has fixed positioning in the CSS file.")
 else:
     print("The navbar does not have fixed positioning in the CSS file.")
+
+
+
+"""
+def check_tag_with_attr(tag, tag_attr_type, tag_attr_val, soup):
+    if tag:
+        if tag_attr_type:
+            # If both tag and tag_attr_type are specified, find tags with the specified attribute
+            tags_with_attr = []
+            for t in soup.find_all(tag):
+                if tag_attr_type in t.attrs and t[tag_attr_type] == tag_attr_val:
+                    tags_with_attr.append(t)
+            return tags_with_attr
+        else:
+            # If only the tag is specified, find tags without considering attributes
+            return soup.find_all(tag)
+    else:
+        # If tag is not specified, find tags with the specified attribute type and value
+        tags = soup.find_all(attrs={tag_attr_type: tag_attr_val})
+        return tags
+    
+# Example usage:
+# Check tags with class="welcome-section"
+# tags = check_tag_with_attr(False, 'class', 'welcome-section', soup)
+"""
