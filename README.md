@@ -4,7 +4,7 @@ This repository contains a validator tool designed for evaluating code submissio
 ## Features
 Validates code submissions based on a set of predefined criteria.
 Provides detailed feedback to users on areas of improvement.
-Supports checking for the following criteria:
+Supports checking for the following criteria provided in FreeCodeCamps:
 * Your portfolio should have a "Welcome" section with an id of welcome-section.
 * Your #welcome-section element should contain an h1 element.
 * You should not have any empty h1 elements within #welcome-section element.
@@ -25,7 +25,7 @@ Here's a refined breakdown of my approach:
 
 2. **Readability**: By adhering to a structured and intuitive code organization, I've ensured that every aspect of my implementation is comprehensible at a glance. This approach not only facilitates easy comprehension but also lays a solid foundation for future collaborators to seamlessly integrate new criteria.
 
-3. **Parameterization**: My functions are elegantly parameterized, affording them the flexibility to adapt to diverse inputs. For instance, the `check_no_empty_tag_in_id_name()` function gracefully accommodates variations in tag names, ID identifiers, and BeautifulSoup objects, empowering it to assess any tag within any designated ID element effortlessly.
+3. **Parameterization**: My functions are elegantly parameterized, affording them the flexibility to adapt to diverse inputs. For instance, the `check_tag_with_attr_has_child_with_attr()` function gracefully accommodates variations in tag names, ID identifiers, and BeautifulSoup objects, empowering it to assess any tag within any designated ID element effortlessly.
 
 4. **HTML and CSS Parsing**: Leveraging the robust capabilities of BeautifulSoup for HTML parsing and cssutils for CSS parsing, I've equipped my validator with formidable tools for dissecting and manipulating code submissions. This potent combination ensures efficient extraction of pertinent information, laying the groundwork for smooth expansion with additional validation requirements.
 
@@ -54,7 +54,7 @@ Before running the validation script, make sure to install the required Python p
 Once the dependencies are installed, you can execute the validation script. Navigate to the cloned repository directory and run the Python file:
 ```bash
   cd Code-Validator
-  python app.py
+  python gen_app.py
 ```
 This will execute the validation script, which will analyze your HTML and CSS files against the predefined criteria and provide feedback on areas that need improvement. You can change the HTML and CSS files accordingly to see the results.
 
